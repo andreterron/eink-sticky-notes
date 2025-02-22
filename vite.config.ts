@@ -1,15 +1,16 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "node:path";
 // import { VitePWA } from 'vite-plugin-pwa'
 
 // VitePWA docs: https://vite-pwa-org.netlify.app/guide/
-// When you are ready to enable PWA features: 
+// When you are ready to enable PWA features:
 // 1. Update manifest details in pwaConfig
 // 2. Add icons to the public folder
 // 3. Uncomment the pwaConfig object and the VitePWA plugin
 
-// const pwaConfig = { 
+// const pwaConfig = {
 //   registerType: 'autoUpdate',
 //   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
 //   manifest: {
@@ -38,7 +39,6 @@ import tailwindcss from '@tailwindcss/vite'
 //   },
 // }
 
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -46,4 +46,9 @@ export default defineConfig({
     tailwindcss(),
     // VitePWA(pwaConfig) // Uncomment this line to enable PWA features
   ],
-})
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
