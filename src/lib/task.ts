@@ -1,4 +1,10 @@
-export type TaskStatus = "active" | "ready" | "waiting" | "backlog" | "done";
+export type TaskStatus =
+  | "active"
+  | "ready"
+  | "waiting"
+  | "inbox"
+  | "backlog"
+  | "done";
 
 export interface Task {
   id: string;

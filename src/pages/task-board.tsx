@@ -15,14 +15,12 @@ export default function TaskBoard() {
     db.collection("tasks").getAll(),
   );
 
-  const { active, backlog, ready, waiting } = useMemo(() => {
+  const { active, backlog, ready, waiting, done } = useMemo(() => {
     if (!tasks) return {};
     // Sort tasks before bucketing
     const sortedTasks = [...tasks].sort((a, b) => b.createdAt - a.createdAt);
     return bucketBy(sortedTasks, "status");
   }, [tasks]);
-
-  console.log(tasks?.length, active, backlog, ready, waiting);
 
   return (
     <div className="min-h-screen bg-background p-4 w-full pt-16">
@@ -57,7 +55,8 @@ export default function TaskBoard() {
         <TaskListSection tasks={active} title="Active" />
         <TaskListSection tasks={ready} title="Ready" />
         <TaskListSection tasks={waiting} title="Waiting" />
-        <TaskListSection tasks={backlog} title="Inbox" />
+        <TaskListSection tasks={backlog} title="Backlog" />
+        <TaskListSection tasks={done} title="Done" />
 
         <Button
           variant="ghost"

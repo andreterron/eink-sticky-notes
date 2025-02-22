@@ -1,6 +1,6 @@
 import { Task } from "../lib/task";
-import { Card } from "./ui/card";
 import { CardPlaceholder } from "./ui/card-placeholder";
+import { TaskCard } from "./ui/task-card";
 
 interface TaskListSectionProps {
   tasks: Task[] | undefined;
@@ -16,11 +16,7 @@ export function TaskListSection({ tasks, title }: TaskListSectionProps) {
           {title}
         </CardPlaceholder>
       ) : (
-        tasks.map((task) => (
-          <Card className="p-4" key={task.id}>
-            {task.name}
-          </Card>
-        ))
+        tasks.map((task) => <TaskCard key={task.id} task={task} />)
       )}
     </section>
   );
