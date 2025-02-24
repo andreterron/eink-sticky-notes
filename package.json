@@ -7,6 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "dev:server": "tsx watch server/index.ts",
+    "copy": "rsync -av ./eink/magtag/src/* /Volumes/CIRCUITPY/",
+    "copy:code": "rsync -av ./eink/magtag/src/code.py /Volumes/CIRCUITPY/",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -27,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.13.5",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",

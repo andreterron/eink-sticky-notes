@@ -14,9 +14,40 @@ The idea is to have five to ten e-ink sticky notes on my desk. As I start my wor
 
 Lastly, placing the e-ink sticky note on a base would start my timer for that task, potentially opening a window letting me navigate to the relevant PR or Slack thread.
 
+## Useful commands
+
+#### Start the dashboard
+
+```bash
+npm run dev
+```
+
+#### Start server that communicates with the e-ink devices
+
+```bash
+npm run dev:server
+```
+
+#### Copy circuitpython files to the e-ink device
+
+```bash
+npm run copy
+```
+
+#### Commands TODOs
+
+- [ ] Command to watch circuitpython files and copy them automatically
+- [ ] Run all dev commands in parallel
+
+## Devices
+
+I've been using a [MagTag](https://www.adafruit.com/product/4800), but they've been out of stock for a while. I also had a [Lilygo T5 e-paper](https://lilygo.cc/products/t5-4-7-inch-e-paper-v2-3) with me, but I found it too big, so I haven't even booted it yet.
+
+There are a number of alternatives. I'll update this repo if I try another option (which I'll need to, in order to have 5-10 devices)
+
 ## Lofi Hack
 
-During the hackathon I managed to build a simple dashboard, but I didn't get to get the e-ink display showing the graphics I wanted.
+Here's the hackathon website: https://lofihack.com. During the event I managed to build a simple dashboard, but I didn't get to get the e-ink display showing the graphics I wanted.
 
 ## Created with
 
