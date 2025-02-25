@@ -1,2 +1,6 @@
 src/secrets.py
 src/settings.toml
+
+# Ignore files in the ./downloads/ folder that don't end in .zip
+downloads/*
+!downloads/*.zip

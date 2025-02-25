@@ -3,7 +3,7 @@
 // docs: https://docs.basic.tech/info/schema
 
 export const schema = {
-  project_id: "",
+  project_id: "5de049c2-011a-41e0-a90e-cd7bd4a49618",
   version: 0,
   tables: {
     emojis: {

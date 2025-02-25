@@ -8,8 +8,11 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "dev:server": "tsx watch server/index.ts",
+    "dev:magtag": "nodemon --watch ./eink/magtag/src/code.py --exec \"npm run copy:code\"",
+    "logs:magtag": "screen /dev/tty.usbmodemC7FD1A7102481 115200",
     "copy": "rsync -av ./eink/magtag/src/* /Volumes/CIRCUITPY/",
     "copy:code": "rsync -av ./eink/magtag/src/code.py /Volumes/CIRCUITPY/",
+    "copy:settings": "rsync -av ./eink/magtag/src/settings.toml /Volumes/CIRCUITPY/",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -19,6 +22,7 @@
     "@tailwindcss/vite": "^4.0.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "express": "^4.21.2",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -26,6 +30,7 @@
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.6",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.3",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

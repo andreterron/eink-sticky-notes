@@ -1,5 +1,7 @@
 # E-ink Sticky Notes
 
+![Logo](./logo.png)
+
 E-ink sticky notes showing up-to-date status of tasks, focused on GitHub PRs and customer support Slack threads.
 
 The project has been on my mind for a while, but I started working on it during the [lofi hack](https://lofihack.com/) on Feb 22, 2025
@@ -31,12 +33,21 @@ npm run dev:server
 #### Copy circuitpython files to the e-ink device
 
 ```bash
+# Copy once
 npm run copy
+
+# Watch for changes to code.py
+npm run dev:magtag
+```
+
+#### Logs from the e-ink display
+
+```bash
+npm run logs:magtag
 ```
 
 #### Commands TODOs
 
-- [ ] Command to watch circuitpython files and copy them automatically
 - [ ] Run all dev commands in parallel
 
 ## Devices

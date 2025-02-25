@@ -1,4 +1,9 @@
 import express from "express";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -14,7 +19,7 @@ app.get("/task", (req, res) => {
 });
 
 app.get("/image.png", (req, res) => {
-  res.sendFile("./image.png", { root: __dirname });
+  res.sendFile("./logo.png", { root: __dirname });
 });
 
 app.listen(5002, () => {
