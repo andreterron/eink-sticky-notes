@@ -1,22 +1,10 @@
-/* Heltec Automation weather_station example
- *
- * Function:
- * 1. This example demonstrates how to obtain weather, time, etc. and display on the E-ink display.
- * 2. Time updates use part refresh, while others information update use global refresh
- * 3. Using the weather API provided by senderse.com.
- *
- * Description:
- * 1. This example needs to work with `ArduinoJson` library.
- * 2. Get weather information via http.
- *
- * Library url: https://github.com/HelTecAutomation/Heltec_ESP32
- * Support: support@heltec.cn
- *
- * HelTec AutoMation, Chengdu, China
- * 成都惠利特自动化科技有限公司
- * https://www.heltec.org
- *
- * */
+/**
+ * Eink Sticky Notes
+ */
+
+// TODO: MQTT to receive signal when an update is available
+// TODO: MQTT to send battery data
+
 #include "HT_DEPG0290BxS800FxX_BW.h"
 #include "images.h"
 #include "secrets.h"
@@ -38,7 +26,6 @@ typedef void (*Demo)(void);
 #define battary_in 3.3
 #define coefficient 1.03
 int width, height;
-int demoMode = 0;
 
 uint64_t last_update = 0;
 
@@ -59,6 +46,12 @@ void setup()
   display.screenRotate(DIRECTION);
   display.clear();
   display.drawString(0, 0, "init >>> ");
+  width = display.width();
+  height = display.height();
+  Serial.print("Width: ");
+  Serial.println(width);
+  Serial.print("Height: ");
+  Serial.println(height);
   Serial.print("Connecting to ");
   display.drawString(0, 20, "Connecting to ... ");
   Serial.println(ssid);
@@ -85,69 +78,12 @@ void setup()
   display.display();
   delay(1000);
 }
-void Navigation_bar()
-{
-  display.setFont(ArialMT_Plain_10);
-  display.drawLine(0, 15, 296, 15);
-  display.drawXbm(5, -3, 20, 20, wifix_bitfis);
-  display.drawString(25, 0, ssid);
-  battery();
-}
-void battery()
-{
-  analogReadResolution(12);
-  int battery_levl = analogRead(7) * Resolution * battary_in * coefficient; // battary/4096*3.3* coefficient
-  float battery_one = 0.4125;
-  Serial.printf("ADC analog value = %.2f\n", battery_levl);
-  if (battery_levl < battery_one)
-  {
-    display.drawString(230, 0, "N/A");
-    display.drawXbm(255, 0, battery_w, battery_h, battery0);
-  }
-  else if (battery_levl < 2 * battery_one && battery_levl > battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, battery1);
-  }
-  else if (battery_levl < 3 * battery_one && battery_levl > 2 * battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, battery2);
-  }
-  else if (battery_levl < 4 * battery_one && battery_levl > 3 * battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, battery3);
-  }
-  else if (battery_levl < 5 * battery_one && battery_levl > 4 * battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, battery4);
-  }
-  else if (battery_levl < 6 * battery_one && battery_levl > 5 * battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, battery5);
-  }
-  else if (battery_levl < 7 * battery_one && battery_levl > 6 * battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, battery6);
-  }
-  else if (battery_levl < 7 * battery_one && battery_levl > 6 * battery_one)
-  {
-    display.drawXbm(270, 0, battery_w, battery_h, batteryfull);
-  }
-}
-void drawImageDemo()
-{
-  display.setFont(ArialMT_Plain_16);
-  MakeRequest();
-  display.drawLine(165, 15, 165, 80);
-  display.drawLine(0, 80, 296, 80);
-  display.drawLine(0, 94, 296, 94);
-  Serial.println("Done drawing image");
-}
-void MakeRequest()
+bool checkForChanges()
 {
   if (!client.connect(host, port))
   {
     Serial.println("Connect host failed!");
-    return;
+    return false;
   }
   Serial.println("host Conected!");
   String getUrl = "/data";
@@ -168,15 +104,10 @@ void MakeRequest()
   if (error)
   {
     Serial.println("deserialize json failed");
-    return;
+    return false;
   }
   Serial.println("deserialize json success");
 
-  // TODO: as number
-  // strcpy(target, doc["last_update"].as<const char *>())
-  // strtol - String to long integer
-  // uint8_t code_day = strtol(doc["results"][0]["daily"][1]["code_day"].as<const char *>(), NULL, 10)
-  // TODO: Parse last_update
   uint64_t current_last_update = doc["last_update"];
 
   Serial.println("Last update - Server");
@@ -184,18 +115,64 @@ void MakeRequest()
   Serial.println("Last update - Local");
   Serial.println(last_update);
 
-  if (current_last_update > last_update)
+  bool changed = current_last_update > last_update;
+
+  if (changed)
   {
-    // TODO: do something
     last_update = current_last_update;
     Serial.println("Time updated!");
   }
-  Serial.println("Going to stop");
 
   client.stop();
   Serial.println("Stopped");
+
+  return changed;
 }
 
+void showImageFromServer()
+{
+  if (!client.connect(host, port))
+  {
+    Serial.println("Connect host failed!");
+    return;
+  }
+
+  // TODO: Send width and height to request
+
+  Serial.println("Downloading XBM image...");
+  String getUrl = "/image.xbm";
+  client.print(String("GET ") + getUrl + " HTTP/1.1\r\n" +
+               "Host: " + host + "\r\n" +
+               "Connection: close\r\n\r\n");
+
+  // Skip HTTP headers
+  char endOfHeaders[] = "\r\n\r\n";
+  if (!client.find(endOfHeaders))
+  {
+    Serial.println("Invalid response!");
+    return;
+  }
+
+  display.clear();
+
+  // Calculate buffer size with padding
+  // Each row needs to be a multiple of 8 bits
+  int rowBytes = (width + 7) / 8; // Rounds up to nearest byte
+  uint8_t buffer[rowBytes * height];
+
+  int bytesRead = client.readBytes(buffer, sizeof(buffer));
+
+  if (bytesRead > 0)
+  {
+    display.drawXbm(0, 0, width, height, buffer);
+    display.display();
+  }
+
+  client.stop();
+  Serial.println("Image displayed");
+}
+
+// TODO: Review what's "Vext"
 void VextON(void)
 {
   pinMode(18, OUTPUT);
@@ -210,10 +187,13 @@ void VextOFF(void) // Vext default OFF
 
 void loop()
 {
-  display.clear();
-  display.clear();
-  Navigation_bar();
-  drawImageDemo();
-  display.display();
+  bool changed = checkForChanges();
+
+  if (changed)
+  {
+    showImageFromServer();
+  }
+
+  // TODO: Review update time
   delay(1000 * 60);
 }
